@@ -52,7 +52,7 @@ const HeroContent = () => {
                     className='py-2 button-primary text-center text-white cursor-pointer rounded-lg max-w-[200px]'
                     href='#contact'
                 >
-                    Let's Connect
+                    Let&apos;s Connect
                 </motion.a>
 
             </div>
