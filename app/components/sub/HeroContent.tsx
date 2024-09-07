@@ -19,33 +19,25 @@ const HeroContent = () => {
                 <motion.div
                     variants={slideInFromTop}
                     className='Welcome-box py-[8px] px-[7px] border border-[#7042f88b] opacity-[0.9]'
-
                 >
-
                     <SparklesIcon className='text-[#b49bff] mr-[10px] h-5 w-5' />
-                    <h1 className='Welcome-text text-[13px]'>Fullstack Developer </h1>
-
+                    <h1 className='Welcome-text text-[13px]'>Full Stack Developer | Mobile Developer  </h1>
                 </motion.div>
 
                 <motion.div
-
                     variants={slideInFromLeft(0.5)}
                     className='flex flex-col gap-6 mt-6 text-6xl font-bold text-white max-w-[600px] w-auto h-auto'
                 >
-                    <span>
-                        Providing
-                        <span className='text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500'> the best </span>
-                        project experience
-                    </span>
+                    <span className='text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500'> Daksh Nauni </span>
                 </motion.div>
 
                 <motion.p
                     variants={slideInFromLeft(0.8)}
                     className='text-lg text-gray-400 my-5 max-w-[600px]'
                 >
-                    I&apos;m a full stack software engineer with experience in website, mobile and software development. Check out my projects and skills.
-
-
+                    Hi! I&apos;m a Full Stack Software Engineer specializing in creating websites, mobile apps, and robust software solutions.
+                    <br />
+                    Explore my portfolio to see how I bring ideas to life through code!
                 </motion.p>
                 <motion.a
                     variants={slideInFromLeft(1)}
@@ -74,4 +66,4 @@ const HeroContent = () => {
     )
 }
 
-export default HeroContent
+export default HeroContent;
