@@ -35,7 +35,7 @@ const HeroContent = () => {
                     variants={slideInFromLeft(0.8)}
                     className='text-lg text-gray-400 my-5 max-w-[600px]'
                 >
-                    Hi! I&apos;m a Full Stack Software Engineer specializing in creating websites, mobile apps, and robust software solutions.
+                    Hi! I&apos;m a Full Stack Developer specializing in creating websites, mobile apps, and robust software solutions.
                     <br />
                     Explore my portfolio to see how I bring ideas to life through code!
                 </motion.p>
@@ -53,7 +53,6 @@ const HeroContent = () => {
                 className='w-full h-full flex justify-center items-center'
 
             >
-
                 <Image
                     src="/mainIconsdark.svg"
                     alt="work icons"
