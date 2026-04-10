@@ -262,7 +262,7 @@ const Contact = () => {
                   Phone Number
                   <span className="ml-1.5 text-xs text-gray-500 font-normal">(optional)</span>
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-2 min-w-0">
                   <input
                     id="countryCode"
                     name="countryCode"
@@ -270,7 +270,7 @@ const Contact = () => {
                     value={formData.countryCode}
                     onChange={handleChange}
                     placeholder="+1"
-                    className="w-20 shrink-0 bg-[#0d0225]/70 border border-[#7042f861] rounded-lg px-3 py-3
+                    className="w-16 shrink-0 bg-[#0d0225]/70 border border-[#7042f861] rounded-lg px-2 py-3
                     text-gray-200 placeholder-gray-600 text-sm
                     focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
                     transition-all duration-200 backdrop-blur-sm"
@@ -282,7 +282,7 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="234 567 8900"
-                    className={`flex-1 bg-[#0d0225]/70 border ${
+                    className={`min-w-0 flex-1 bg-[#0d0225]/70 border ${
                       errors.phone ? "border-red-500/70" : "border-[#7042f861]"
                     } rounded-lg px-4 py-3 text-gray-200 placeholder-gray-600 text-sm
                     focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
