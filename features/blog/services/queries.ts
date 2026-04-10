@@ -110,15 +110,15 @@ export async function getPostsPaginatedByTag(
 
   const [posts, total] = await Promise.all([
     getClient().fetch<PostSummary[]>(
-      `*[_type == "post" && defined(slug.current) && $tag in tags] | order(publishedAt desc) [$start...$end] {
+      `*[_type == "post" && defined(slug.current) && $tagFilter in tags] | order(publishedAt desc) [$start...$end] {
         ${POST_SUMMARY_FIELDS}
       }`,
-      { tag, start, end },
+      { tagFilter: tag, start, end },
       { next: { revalidate: 60 } }
     ),
     getClient().fetch<number>(
-      `count(*[_type == "post" && defined(slug.current) && $tag in tags])`,
-      { tag },
+      `count(*[_type == "post" && defined(slug.current) && $tagFilter in tags])`,
+      { tagFilter: tag },
       { next: { revalidate: 60 } }
     ),
   ]);
