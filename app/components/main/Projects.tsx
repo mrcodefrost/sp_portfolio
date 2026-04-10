@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { slideInFromLeft, slideInFromRight, slideInFromTop } from "@/utils/motion";
 import ProjectCard from "../sub/ProjectCard";
 
 const PROJECTS = [
@@ -184,17 +187,29 @@ const INITIAL_MOBILE = 3;
 
 const Projects = () => {
   const [expanded, setExpanded] = useState(false);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
     <div
+      ref={ref}
       className="flex flex-col items-center justify-center py-20 z-[20]"
       id="projects"
     >
-      <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-10">
+      <motion.h1
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={slideInFromTop}
+        className="text-[40px] font-semibold text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-cyan-500 mb-10"
+      >
         PROJECTS
-      </h1>
+      </motion.h1>
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-10 px-10">
+      <motion.div
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={slideInFromLeft(0.3)}
+        className="w-full grid grid-cols-1 md:grid-cols-3 gap-10 px-10"
+      >
         {PROJECTS.map((project, index) => {
           let className = "";
           if (!expanded) {
@@ -210,15 +225,18 @@ const Projects = () => {
             </div>
           );
         })}
-      </div>
+      </motion.div>
 
       {!expanded && (
-        <button
+        <motion.button
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={slideInFromRight(0.5)}
           onClick={() => setExpanded(true)}
           className="mt-12 py-3 px-8 button-primary text-center text-white cursor-pointer rounded-lg border border-[#7042f88b] text-sm font-medium transition-all duration-300"
         >
           View More Projects
-        </button>
+        </motion.button>
       )}
     </div>
   );
