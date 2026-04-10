@@ -27,12 +27,12 @@ const Navbar = () => {
             <a href="#projects" className="cursor-pointer hover:text-purple-400 transition-colors">
               Projects
             </a>
-            <a href="#contact" className="cursor-pointer hover:text-purple-400 transition-colors">
-              Contact
-            </a>
             <Link href="/blog" className="cursor-pointer hover:text-purple-400 transition-colors">
               Blog
             </Link>
+            <a href="#contact" className="cursor-pointer hover:text-purple-400 transition-colors">
+              Contact
+            </a>
           </div>
 
           {/* Desktop socials */}
@@ -99,13 +99,6 @@ const Navbar = () => {
           >
             Projects
           </a>
-          <a
-            href="#contact"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-200 hover:text-purple-400 transition-colors text-lg"
-          >
-            Contact
-          </a>
           <Link
             href="/blog"
             onClick={() => setMenuOpen(false)}
@@ -113,6 +106,13 @@ const Navbar = () => {
           >
             Blog
           </Link>
+          <a
+            href="#contact"
+            onClick={() => setMenuOpen(false)}
+            className="text-gray-200 hover:text-purple-400 transition-colors text-lg"
+          >
+            Contact
+          </a>
           <div className="flex flex-row gap-5 mt-2">
             {Socials.map((social) => (
               <a
