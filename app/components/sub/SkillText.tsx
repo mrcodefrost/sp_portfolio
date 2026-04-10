@@ -11,7 +11,7 @@ const SkillText = () => {
         variants={slideInFromTop}
       // className="Welcome-box py-[8px] px-[7px] border border-[#7042f88b] opacity-[0.9] "
       >
-        <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 py-20">
+        <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-10">
           SKILLS
         </h1>
       </motion.div>

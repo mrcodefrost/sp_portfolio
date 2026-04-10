@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import React from "react";
 
@@ -21,8 +19,8 @@ const ProjectCard = ({ src, title, subtitle, tech, description, githubUrl, demoU
       <Image
         src={src}
         alt={title}
-        width={1000}
-        height={1200}
+        width={600}
+        height={400}
         className="w-full object-contain"
       />
 

@@ -1,15 +1,34 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import StarsCanvas from "./components/main/StarBackground";
-import Navbar from "./components/main/Navbar";
-import Footer from "./components/main/Footer";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Daksh Portfolio",
-  description: "Hi! Welcome to my portfolio",
+  metadataBase: new URL("https://dakshnauni.com"),
+  title: {
+    default: "Daksh Nauni — Full Stack & Mobile Developer",
+    template: "%s | Daksh Nauni",
+  },
+  description:
+    "Full Stack and Mobile Developer specialising in Flutter, React, Node.js and cloud platforms. Explore projects, skills, and more.",
+  openGraph: {
+    title: "Daksh Nauni — Full Stack & Mobile Developer",
+    description:
+      "Full Stack and Mobile Developer specialising in Flutter, React, Node.js and cloud platforms.",
+    url: "https://dakshnauni.com",
+    siteName: "Daksh Nauni",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Daksh Nauni — Full Stack & Mobile Developer",
+    description:
+      "Full Stack and Mobile Developer specialising in Flutter, React, Node.js and cloud platforms.",
+  },
 };
 
 export default function RootLayout({
@@ -19,11 +38,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={'$(inter.className) bg-[#030014] overflow-y-scroll overflow-x-hidden'}>
-        <StarsCanvas />
-        <Navbar />
+      <body className={`${inter.className} overflow-x-hidden`}>
         {children}
-        <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

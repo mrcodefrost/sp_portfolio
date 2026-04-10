@@ -3,7 +3,6 @@ import {
   Frontend_skill,
   Other_skill,
 } from "@/constants";
-import React from "react";
 import SkillDataProvider from "../sub/SkillDataProvider";
 import SkillText from "../sub/SkillText";
 
@@ -11,8 +10,7 @@ const Skills = () => {
   return (
     <section
       id="skills"
-      className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden pb-0 py-15"
-      style={{ transform: "scale(0.9" }}
+      className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20"
     >
       <SkillText />
 
@@ -77,7 +75,7 @@ const Skills = () => {
         <div className="w-full h-full z-[-10] opacity-30 absolute flex items-center justify-center bg-cover">
           <video
             className="w-full h-auto"
-            preload="false"
+            preload="none"
             playsInline
             loop
             muted
