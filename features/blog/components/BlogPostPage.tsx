@@ -29,7 +29,7 @@ export default async function BlogPostPage({ post }: BlogPostPageProps) {
       <BlogHeader post={post} />
 
       {/* Article body + optional sticky TOC sidebar */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 pb-0 pt-2">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 pb-16 pt-2">
         <div className="flex gap-14 justify-center">
           {/* ── Main article ─────────────────────────────────────── */}
           <article className="w-full max-w-[720px] min-w-0">
