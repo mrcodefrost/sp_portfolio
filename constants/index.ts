@@ -91,6 +91,11 @@ export const Socials = [
     src: "/github.svg",
     url: "https://github.com/mrcodefrost",
   },
+  {
+    name: "Stack Overflow",
+    src: "/stackoverflow.svg",
+    url: "https://stackoverflow.com/users/15269218/mr-code-frost",
+  },
   // {
   //   name: "Resume",
   //   src: "/resume.svg",
