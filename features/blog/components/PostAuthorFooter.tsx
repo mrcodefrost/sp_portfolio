@@ -1,17 +1,23 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function PostAuthorFooter() {
   return (
     <div className="border-t border-gray-200 dark:border-slate-800 mt-14 pt-10">
       <div className="flex items-start gap-4">
-        {/* Initials avatar */}
+        {/* Portrait avatar */}
         <div
-          className="shrink-0 w-11 h-11 rounded-full bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center"
+          className="shrink-0 w-20 h-20 rounded-full border-2 border-purple-200 dark:border-purple-800 overflow-hidden"
           aria-hidden="true"
         >
-          <span className="text-sm font-semibold text-purple-600 dark:text-purple-400">
-            DN
-          </span>
+          <Image
+            src="/daksh_portrait.jpg"
+            alt="Daksh Nauni"
+            width={400}
+            height={400}
+            className="w-full h-full object-cover object-top"
+            quality={100}
+          />
         </div>
 
         <div className="min-w-0">
