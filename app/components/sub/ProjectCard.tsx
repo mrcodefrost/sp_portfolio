@@ -15,16 +15,16 @@ interface Props {
 
 const ProjectCard = ({ src, title, subtitle, tech, description, githubUrl, demoUrl, githubText, demoText }: Props) => {
   return (
-    <div className="relative overflow-hidden rounded-lg shadow-lg border border-[#2A0E61] w-full">
+    <div className="relative overflow-hidden rounded-lg shadow-lg border border-[#2A0E61] w-full flex flex-col h-full">
       <Image
         src={src}
         alt={title}
         width={600}
         height={400}
-        className="w-full object-contain"
+        className="w-full h-56 object-cover"
       />
 
-      <div className="relative p-4">
+      <div className="relative p-4 flex flex-col flex-1">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-white">{title}</h1>
           <div className="w-full h-0.5 bg-[#2A0E61]"></div>
@@ -33,10 +33,7 @@ const ProjectCard = ({ src, title, subtitle, tech, description, githubUrl, demoU
         <h2 className="text-l italic text-[#0AD3FF]">{tech}</h2>
         <p className="mt-2 text-gray-300 whitespace-pre-line break-words">{description}</p>
 
-
-        <div className="flex justify-center items-center">
-
-
+        <div className="flex justify-center items-center mt-auto">
           {/* GitHub Button */}
           {githubUrl && (
             <a

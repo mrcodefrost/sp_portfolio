@@ -211,12 +211,12 @@ const Projects = () => {
         className="w-full grid grid-cols-1 md:grid-cols-3 gap-10 px-10"
       >
         {PROJECTS.map((project, index) => {
-          let className = "";
+          let className = "flex";
           if (!expanded) {
             if (index >= INITIAL_DESKTOP) {
               className = "hidden";
             } else if (index >= INITIAL_MOBILE) {
-              className = "hidden md:block";
+              className = "hidden md:flex";
             }
           }
           return (
