@@ -25,8 +25,8 @@ export default function PostAuthorFooter() {
             Daksh Nauni
           </p>
           <p className="text-[1rem] leading-relaxed text-gray-600 dark:text-slate-400 mb-3">
-            Daksh likes developing softwares, hands on with mobile and web
-            applications and backend systems.
+            I am a software engineer who enjoys building mobile apps, web platforms, and backend systems.
+            This blog is where I share what I learn while building real projects, from debugging weird errors to shipping features that actually matter.
           </p>
           <div className="flex items-center gap-4">
             <Link
