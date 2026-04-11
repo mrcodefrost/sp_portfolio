@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { ContentBlock, ImageBlockValue, YouTubeBlockValue } from "../../types";
 import type { ProcessedCodeBlock } from "../../lib/code-highlight";
@@ -14,6 +15,18 @@ interface PortableTextRendererProps {
 // ─── Code block (pre-highlighted HTML injected by server) ─────────────────────
 
 function RenderedCodeBlock({ value }: { value: ProcessedCodeBlock }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // clipboard API unavailable — silently ignore
+    }
+  };
+
   return (
     <div className="my-8 rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-[#f6f8fa] dark:bg-[#0d1117] text-sm not-prose">
       {/* Toolbar */}
@@ -34,12 +47,20 @@ function RenderedCodeBlock({ value }: { value: ProcessedCodeBlock }) {
               {value.language}
             </span>
           )}
+          <button
+            type="button"
+            onClick={handleCopy}
+            aria-label={copied ? "Copied" : "Copy code"}
+            className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+          >
+            {copied ? "Copied!" : "Copy"}
+          </button>
         </div>
       </div>
 
       {/* Highlighted code */}
       <div
-        className="overflow-x-auto [&>pre]:p-5 [&>pre]:m-0 [&>pre]:leading-relaxed [&>pre]:text-[0.875rem]"
+        className="overflow-x-auto [&>pre]:p-5 [&>pre]:m-0 [&>pre]:leading-relaxed [&>pre]:text-[0.875rem] [&>pre]:min-w-max"
         dangerouslySetInnerHTML={{ __html: value._highlightedHtml }}
       />
     </div>
