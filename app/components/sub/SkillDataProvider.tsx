@@ -37,7 +37,7 @@ const SkillDataProvider = ({ src, width, height, index }: Props) => {
                 width={width}
                 height={height}
                 alt={src.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "skill"}
-                style={{ height: 'auto' }}
+                style={{ height: '60px', width: 'auto' }}
             />
         </motion.div>
     )
