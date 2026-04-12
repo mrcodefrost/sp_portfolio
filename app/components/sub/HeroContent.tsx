@@ -34,7 +34,7 @@ const HeroContent = () => {
                     variants={slideInFromLeft(0.8)}
                     className='text-lg text-gray-400 max-w-[600px]'
                 >
-                    Hi! I&apos;ma Software Engineer who builds mobile, web, and full-stack products.
+                    Hi! I&apos;m a Software Engineer who builds mobile, web, and full-stack products.
                     I enjoy turning real-world problems into scalable, user-focused software.
                     <br />
                     Explore my work and let&apos;s build something together.
