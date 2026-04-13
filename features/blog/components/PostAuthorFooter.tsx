@@ -16,7 +16,6 @@ export default function PostAuthorFooter() {
             width={400}
             height={400}
             className="w-full h-full object-cover object-top"
-            quality={100}
           />
         </div>
 
