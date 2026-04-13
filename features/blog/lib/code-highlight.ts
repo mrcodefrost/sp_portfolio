@@ -25,6 +25,7 @@ const SUPPORTED_LANGS = new Set([
   "html",
   "markdown",
   "sql",
+  "dart",
   "text",
 ]);
 

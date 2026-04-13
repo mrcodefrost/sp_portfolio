@@ -30,6 +30,7 @@ export const codeBlockSchema = defineType({
           "html",
           "markdown",
           "sql",
+          "dart",
           "text",
         ].map((l) => ({ title: l, value: l })),
       },
