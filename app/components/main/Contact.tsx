@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { slideInFromLeft, slideInFromRight } from "@/utils/motion";
 import toast from "react-hot-toast";
+import VerticalCutReveal from "../sub/VerticalCutReveal";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mpzvajzo";
 
@@ -199,17 +200,27 @@ const Contact = () => {
 
   return (
     <div
+      ref={ref}
       id="contact"
       className="flex flex-col items-center justify-center py-20 z-[20] w-full"
     >
       <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 mb-10">
-        CONTACT ME
+        <VerticalCutReveal
+          autoStart={inView}
+          splitBy="characters"
+          staggerDuration={0.025}
+          staggerFrom="first"
+          containerClassName="justify-center"
+          transition={{ type: "spring", stiffness: 200, damping: 21 }}
+        >
+          CONTACT ME
+        </VerticalCutReveal>
       </h1>
 
-      <div ref={ref} className="w-full max-w-3xl px-6 md:px-10">
+      <div className="w-full max-w-3xl px-6 md:px-10">
         {/* Header card */}
         <motion.div
-          variants={slideInFromLeft(0.2)}
+          variants={slideInFromLeft(0.15)}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           className="mb-8 text-center"
@@ -217,7 +228,7 @@ const Contact = () => {
           <p className="text-gray-400 text-base leading-relaxed">
             Have a project in mind, a job opportunity, or just want to say hi?
             <br />
-            Fill out the form below and I&apos;ll get back to you as soon as possible.
+            I typically reply within 3 business days.
           </p>
         </motion.div>
 
@@ -231,6 +242,11 @@ const Contact = () => {
         >
           {/* Glow effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-900/10 via-transparent to-cyan-900/5 pointer-events-none" />
+
+          <span className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-[#7042f861] bg-[#0d0225]/80 px-3 py-1 text-xs text-gray-300 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+            Available
+          </span>
 
           <div className="relative flex flex-col gap-5">
             {/* Row 1: Name + Email */}

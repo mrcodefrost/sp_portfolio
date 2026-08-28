@@ -83,3 +83,23 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* ─────────────────────────────────────────────
+   Testimonials marquee (scroll driven by Framer Motion in Testimonials.tsx)
+   ───────────────────────────────────────────── */
+.marquee-fade {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}

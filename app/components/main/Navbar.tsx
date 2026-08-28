@@ -1,7 +1,6 @@
 "use client";
 
-import { Socials } from "@/constants";
-import Image from "next/image";
+import { SOCIALS } from "@/constants/socials";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -21,11 +20,11 @@ const Navbar = () => {
             <a href="#about-me" className="cursor-pointer hover:text-purple-400 transition-colors">
               About me
             </a>
-            <a href="#skills" className="cursor-pointer hover:text-purple-400 transition-colors">
-              Skills
-            </a>
             <a href="#projects" className="cursor-pointer hover:text-purple-400 transition-colors">
               Projects
+            </a>
+            <a href="#skills" className="cursor-pointer hover:text-purple-400 transition-colors">
+              Skills
             </a>
             <Link href="/blog" className="cursor-pointer hover:text-purple-400 transition-colors">
               Blog
@@ -37,15 +36,16 @@ const Navbar = () => {
 
           {/* Desktop socials */}
           <div className="hidden md:flex flex-row gap-5">
-            {Socials.map((social) => (
+            {SOCIALS.map((social) => (
               <a
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={social.href}
+                target={social.href.startsWith("mailto") ? undefined : "_blank"}
+                rel={social.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
                 key={social.name}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
+                aria-label={social.name}
+                className="cursor-pointer text-gray-300 hover:text-purple-400 transition-colors"
               >
-                <Image src={social.src} alt={social.name} width={24} height={24} />
+                {social.icon}
               </a>
             ))}
           </div>
@@ -86,18 +86,18 @@ const Navbar = () => {
             About me
           </a>
           <a
-            href="#skills"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-200 hover:text-purple-400 transition-colors text-lg"
-          >
-            Skills
-          </a>
-          <a
             href="#projects"
             onClick={() => setMenuOpen(false)}
             className="text-gray-200 hover:text-purple-400 transition-colors text-lg"
           >
             Projects
+          </a>
+          <a
+            href="#skills"
+            onClick={() => setMenuOpen(false)}
+            className="text-gray-200 hover:text-purple-400 transition-colors text-lg"
+          >
+            Skills
           </a>
           <Link
             href="/blog"
@@ -114,15 +114,16 @@ const Navbar = () => {
             Contact
           </a>
           <div className="flex flex-row gap-5 mt-2">
-            {Socials.map((social) => (
+            {SOCIALS.map((social) => (
               <a
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={social.href}
+                target={social.href.startsWith("mailto") ? undefined : "_blank"}
+                rel={social.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
                 key={social.name}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
+                aria-label={social.name}
+                className="cursor-pointer text-gray-300 hover:text-purple-400 transition-colors"
               >
-                <Image src={social.src} alt={social.name} width={24} height={24} />
+                {social.icon}
               </a>
             ))}
           </div>

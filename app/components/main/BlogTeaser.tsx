@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { slideInFromLeft, slideInFromRight, slideInFromTop } from "@/utils/motion";
+import { slideInFromLeft, slideInFromRight } from "@/utils/motion";
 import Link from "next/link";
+import VerticalCutReveal from "../sub/VerticalCutReveal";
 
 const BlogTeaser = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -14,20 +15,23 @@ const BlogTeaser = () => {
       ref={ref}
       className="flex flex-col items-center justify-center py-20 px-6 relative overflow-hidden z-20"
     >
-      <motion.div
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        variants={slideInFromTop}
-      >
-        <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-cyan-500 mb-6 text-center">
+      <h1 className="text-[40px] font-semibold text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-cyan-500 mb-6 text-center">
+        <VerticalCutReveal
+          autoStart={inView}
+          splitBy="characters"
+          staggerDuration={0.025}
+          staggerFrom="first"
+          containerClassName="justify-center"
+          transition={{ type: "spring", stiffness: 200, damping: 21 }}
+        >
           WRITINGS
-        </h1>
-      </motion.div>
+        </VerticalCutReveal>
+      </h1>
 
       <motion.div
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
-        variants={slideInFromLeft(0.3)}
+        variants={slideInFromLeft(0.15)}
         className="max-w-175 text-center"
       >
         <p className="text-gray-300 text-lg leading-relaxed mb-3">
@@ -44,7 +48,7 @@ const BlogTeaser = () => {
       <motion.div
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
-        variants={slideInFromRight(0.5)}
+        variants={slideInFromRight(0.3)}
         className="mt-10"
       >
         <Link
