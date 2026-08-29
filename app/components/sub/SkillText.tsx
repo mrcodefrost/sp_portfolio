@@ -1,10 +1,11 @@
 "use client"
-import React from 'react'
-import { useInView } from 'react-intersection-observer'
+import React, { useRef } from 'react'
+import { useInView } from 'framer-motion'
 import VerticalCutReveal from './VerticalCutReveal'
 
 const SkillText = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, amount: 0.2 })
 
   return (
     <div ref={ref} className='w-full h-auto flex flex-col items-center justify-center'>

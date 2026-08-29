@@ -8,6 +8,7 @@ interface Props {
   tech: string;
   highlights: string[];
   archived?: boolean;
+  award?: string;
   linkAUrl?: string;
   linkAText?: string;
   linkBUrl?: string;
@@ -24,6 +25,7 @@ const ProjectCard = ({
   tech,
   highlights,
   archived,
+  award,
   linkAUrl,
   linkAText,
   linkBUrl,
@@ -36,6 +38,11 @@ const ProjectCard = ({
       {archived && (
         <span className="absolute top-3 right-3 z-10 rounded-full border border-[#7042f88b] bg-[#0d0d1f]/80 px-3 py-1 text-xs text-gray-300 backdrop-blur-sm">
           Archived
+        </span>
+      )}
+      {award && (
+        <span className="absolute top-3 left-3 z-10 rounded-full border border-amber-400/40 bg-[#1a1400]/80 px-3 py-1 text-xs font-medium text-amber-300 backdrop-blur-sm">
+          🏆 Award Winner
         </span>
       )}
       <Image

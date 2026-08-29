@@ -3,7 +3,7 @@ import HeroContent from '../sub/HeroContent'
 
 const Hero = () => {
   return (
-    <div id='about-me' className= 'relative flex flex-col justify-center min-h-dvh w-full'>
+    <div id='home' className= 'relative flex flex-col justify-center min-h-dvh w-full'>
 
         <video
 

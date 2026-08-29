@@ -206,6 +206,12 @@ export const Backend_skill = [
     width: 95,
     height: 95,
   },
+  {
+    skill_name: "Railway",
+    Image: "/railway.svg",
+    width: 80,
+    height: 80,
+  },
 
 ];
 
@@ -227,12 +233,6 @@ export const Other_skill = [
     Image: "/java.png",
     width: 85,
     height: 85,
-  },
-  {
-    skill_name: "Selenium",
-    Image: "/selenium.png",
-    width: 70,
-    height: 70,
   },
   {
     skill_name: "Git",

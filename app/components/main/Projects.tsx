@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { fadeInUp, slideInFromTop, staggerContainer } from "@/utils/motion";
+import { fadeInUp, slideInFromTop } from "@/utils/motion";
 import ProjectCard from "../sub/ProjectCard";
 import VerticalCutReveal from "../sub/VerticalCutReveal";
 import { PROJECTS, ProjectCategory } from "@/constants/projects";
@@ -102,12 +102,8 @@ const Projects = () => {
 
       <div className="w-full max-w-screen-xl mx-auto flex flex-col gap-10 px-10">
         {rows.map((row, rowIndex) => (
-          <motion.div
+          <div
             key={row.map((p) => p.title).join("-")}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={staggerContainer(0.18)}
             className="grid grid-cols-1 md:grid-cols-3 gap-10"
           >
             {row.map((project, indexInRow) => {
@@ -121,12 +117,19 @@ const Projects = () => {
                 }
               }
               return (
-                <motion.div key={project.title} variants={fadeInUp()} className={className}>
+                <motion.div
+                  key={project.title}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  variants={fadeInUp(indexInRow * 0.15)}
+                  className={className}
+                >
                   <ProjectCard {...project} />
                 </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         ))}
       </div>
 

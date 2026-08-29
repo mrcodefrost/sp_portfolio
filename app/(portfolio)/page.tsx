@@ -1,4 +1,5 @@
 import Hero from "../components/main/Hero";
+import About from "../components/main/About";
 import Skills from "../components/main/Skills";
 import Projects from "../components/main/Projects";
 import Testimonials from "../components/main/Testimonials";
@@ -10,6 +11,7 @@ export default function Home() {
     <main className="h-full w-full">
       <div className="flex flex-col">
         <Hero />
+        <About />
         <Projects />
         <Testimonials />
         <Skills />

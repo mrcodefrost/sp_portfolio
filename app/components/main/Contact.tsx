@@ -226,9 +226,18 @@ const Contact = () => {
           className="mb-8 text-center"
         >
           <p className="text-gray-400 text-base leading-relaxed">
-            Have a project in mind, a job opportunity, or just want to say hi?
+            Open to full-time, contract, and select freelance remote work.
             <br />
-            I typically reply within 3 business days.
+            I typically reply within 3 business days, or connect on{" "}
+            <a
+              href="https://www.linkedin.com/in/daksh-nauni-69a470208/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-300 hover:text-purple-200 transition-colors underline underline-offset-2"
+            >
+              LinkedIn
+            </a>
+            .
           </p>
         </motion.div>
 

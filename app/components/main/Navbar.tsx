@@ -9,10 +9,10 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001417] backdrop-blur-md z-50 px-4 md:px-10">
+      <div className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#030014]/80 md:bg-[#03001417] backdrop-blur-md z-50 px-4 md:px-10">
         <div className="w-full h-full flex flex-row items-center justify-between m-auto">
           <a href="#about-me" className="flex flex-row items-center">
-            <span className="font-bold text-gray-300">DAKSH NAUNI</span>
+            <span className="font-bold text-gray-300 [text-shadow:0_1px_4px_rgba(0,0,0,0.9)]">DAKSH NAUNI</span>
           </a>
 
           {/* Desktop nav */}

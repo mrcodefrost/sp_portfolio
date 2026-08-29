@@ -3,6 +3,7 @@ export interface Testimonial {
   name: string;
   role?: string;
   company?: string;
+  linkedin?: string;
 }
 
 // Populated once real client quotes are supplied. Never fabricate entries here.
@@ -13,6 +14,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Gourav Kamboj",
     role: "Founder",
     company: "Chai Churi",
+    linkedin: "https://www.linkedin.com/in/gourav-kamboj-9aa780309/",
   },
   {
     quote:
@@ -27,6 +29,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Mayank Tulshyan",
     role: "Founder",
     company: "Workzo",
+    linkedin: "https://www.linkedin.com/in/mayank-tulshyan8/",
   },
   {
     quote:
@@ -34,6 +37,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Neelansh Singh",
     role: "CEO & Founder",
     company: "StartupKaro",
+    linkedin: "https://www.linkedin.com/in/neelansh-singh-70902b365/",
   },
   {
     quote:
@@ -41,6 +45,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Steve Vora & Derek Almeida",
     role: "Founder & Co-Founder",
     company: "CASA",
+    linkedin: "https://www.linkedin.com/in/derek-almeida-b1410917b/",
   },
   {
     quote:
@@ -48,6 +53,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Hemanya Mehta",
     role: "Founder",
     company: "Makoro",
+    linkedin: "https://www.linkedin.com/in/hemanya-mehta-b7b722391/",
   },
   {
     quote:
@@ -61,5 +67,6 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Prerika",
     role: "Travel Blogger",
     company: "Where Peri Goes",
+    linkedin: "https://www.linkedin.com/in/prerikachauhan/",
   },
 ];

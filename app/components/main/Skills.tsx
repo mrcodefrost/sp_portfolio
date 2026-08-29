@@ -3,85 +3,26 @@ import {
   Frontend_skill,
   Other_skill,
 } from "@/constants";
-import SkillDataProvider from "../sub/SkillDataProvider";
 import SkillText from "../sub/SkillText";
+import HoneycombGrid from "../sub/HoneycombGrid";
+import GithubActivity from "../sub/GithubActivity";
+
+const ALL_SKILLS = [...Frontend_skill, ...Backend_skill, ...Other_skill];
 
 const Skills = () => {
   return (
     <section
       id="skills"
-      className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20"
+      className="flex flex-col items-center justify-center gap-3 relative py-20 z-[20]"
     >
       <SkillText />
 
-      <div className="flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-        {Frontend_skill.map((image, index) => (
-          <SkillDataProvider
-            key={index}
-            src={image.Image}
-            width={image.width}
-            height={image.height}
-            index={index}
-          />
-        ))}
-      </div>
-
-      <div className="flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-        {Backend_skill.map((image, index) => (
-          <SkillDataProvider
-            key={index}
-            src={image.Image}
-            width={image.width}
-            height={image.height}
-            index={index}
-          />
-        ))}
-      </div>
-      <div className="flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-        {Other_skill.map((image, index) => (
-          <SkillDataProvider
-            key={index}
-            src={image.Image}
-            width={image.width}
-            height={image.height}
-            index={index}
-          />
-        ))}
-      </div>
-      {/* <div className="flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-        {Full_stack.map((image, index) => (
-          <SkillDataProvider
-            key={index}
-            src={image.Image}
-            width={image.width}
-            height={image.height}
-            index={index}
-          />
-        ))}
-      </div> */}
-      {/* <div className="flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-        {Other_skill.map((image, index) => (
-          <SkillDataProvider
-            key={index}
-            src={image.Image}
-            width={image.width}
-            height={image.height}
-            index={index}
-          />
-        ))}
-      </div> */}
-
-      <div className="w-full h-full absolute">
-        <div className="w-full h-full z-[-10] opacity-30 absolute flex items-center justify-center bg-cover">
-          <video
-            className="w-full h-auto"
-            preload="none"
-            playsInline
-            loop
-            muted
-            autoPlay
-            src="/cards-video.webm"
-          />
+      <div className="relative z-[20] w-full max-w-4xl px-6 md:px-10 flex flex-col items-center">
+        <div className="py-4">
+          <HoneycombGrid skills={ALL_SKILLS} />
+        </div>
+        <div className="w-full mt-8">
+          <GithubActivity />
         </div>
       </div>
     </section>

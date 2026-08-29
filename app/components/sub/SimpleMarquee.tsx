@@ -206,6 +206,9 @@ const SimpleMarquee = ({
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!draggable || !isDragging.current) return;
+    // Own the gesture fully so the browser never falls back to native
+    // text-selection drag or edge-swipe navigation while dragging.
+    e.preventDefault();
 
     const currentPosition = { x: e.clientX, y: e.clientY };
 
@@ -236,10 +239,12 @@ const SimpleMarquee = ({
       className={[
         "flex",
         isHorizontal ? "flex-row" : "flex-col",
+        draggable && "select-none",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
+      style={draggable ? { touchAction: "none", overscrollBehaviorX: "contain" } : undefined}
       onHoverStart={() => (isHovered.current = true)}
       onHoverEnd={() => (isHovered.current = false)}
       onPointerDown={handlePointerDown}
