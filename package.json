@@ -18,6 +18,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.0.0",
+    "lottie-react": "^3.1.2",
     "maath": "^0.10.8",
     "next": "^16.2.3",
     "next-sanity": "^12.2.2",
