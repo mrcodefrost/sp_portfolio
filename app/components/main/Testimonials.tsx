@@ -69,7 +69,7 @@ const MarqueeRow = ({
   testimonials: Testimonial[];
   direction: "left" | "right";
 }) => (
-  <div className="marquee-fade w-full overflow-hidden">
+  <div className="marquee-fade w-full overflow-hidden py-1">
     <SimpleMarquee
       direction={direction}
       baseVelocity={2}

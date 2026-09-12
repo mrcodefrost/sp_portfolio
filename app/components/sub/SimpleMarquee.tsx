@@ -244,7 +244,14 @@ const SimpleMarquee = ({
       ]
         .filter(Boolean)
         .join(" ")}
-      style={draggable ? { touchAction: "none", overscrollBehaviorX: "contain" } : undefined}
+      style={
+        draggable
+          ? {
+              touchAction: isHorizontal ? "pan-y" : "pan-x",
+              overscrollBehaviorX: "contain",
+            }
+          : undefined
+      }
       onHoverStart={() => (isHovered.current = true)}
       onHoverEnd={() => (isHovered.current = false)}
       onPointerDown={handlePointerDown}
