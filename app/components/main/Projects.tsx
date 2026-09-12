@@ -147,7 +147,7 @@ const Projects = () => {
       )}
 
       {sectionOnScreen && (
-        <div className="md:hidden fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+        <div className="md:hidden fixed bottom-6 left-6 z-40 flex flex-col items-start gap-3">
           <AnimatePresence>
             {fabOpen && (
               <motion.div

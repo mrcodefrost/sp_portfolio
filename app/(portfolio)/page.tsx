@@ -5,6 +5,7 @@ import Projects from "../components/main/Projects";
 import Testimonials from "../components/main/Testimonials";
 import BlogTeaser from "../components/main/BlogTeaser";
 import Contact from "../components/main/Contact";
+import ContactFab from "../components/sub/ContactFab";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <Skills />
         <BlogTeaser />
         <Contact />
+        <ContactFab />
       </div>
     </main>
   );
