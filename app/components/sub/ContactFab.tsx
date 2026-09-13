@@ -10,14 +10,6 @@ const ContactFab = () => {
 
   return (
     <div className="contact-fab-shell z-50">
-      <span
-        id="contact-fab-tooltip"
-        role="tooltip"
-        className="contact-fab-tooltip"
-      >
-        <span aria-hidden="true">✦</span> Tap to make contact!
-      </span>
-
       <a
         href="#contact"
         aria-label="Go to contact form"
@@ -32,6 +24,14 @@ const ContactFab = () => {
           className="h-full w-full drop-shadow-[0_8px_14px_rgba(42,14,97,0.65)]"
         />
       </a>
+
+      <span
+        id="contact-fab-tooltip"
+        role="tooltip"
+        className="contact-fab-tooltip"
+      >
+        <span aria-hidden="true">✦</span> Tap to make contact!
+      </span>
     </div>
   );
 };

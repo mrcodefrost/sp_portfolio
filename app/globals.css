@@ -116,9 +116,9 @@ html {
   line-height: 1.35;
   letter-spacing: 0.01em;
   pointer-events: none;
-  visibility: visible;
-  opacity: 1;
-  transform: translate(0, 0) rotate(-1deg) scale(1);
+  visibility: hidden;
+  opacity: 0;
+  transform: translate(8px, 8px) rotate(1deg) scale(0.92);
   transform-origin: bottom right;
   border: 1px solid rgba(103, 232, 249, 0.7);
   border-radius: 18px 18px 4px 18px;
@@ -149,11 +149,18 @@ html {
   transform: skewY(-28deg) rotate(38deg);
 }
 
-.contact-fab-shell:hover .contact-fab-tooltip,
-.contact-fab-shell:focus-within .contact-fab-tooltip {
+.contact-fab:focus-visible + .contact-fab-tooltip {
   visibility: visible;
   opacity: 1;
   transform: translate(0, 0) rotate(-1deg) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-fab-shell:hover .contact-fab-tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(0, 0) rotate(-1deg) scale(1);
+  }
 }
 
 @media (min-width: 640px) {
