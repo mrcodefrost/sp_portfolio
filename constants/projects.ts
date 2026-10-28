@@ -94,6 +94,20 @@ export const PROJECTS: Project[] = [
     linkAText: "Visit Site",
   },
   {
+    src: "/getAppDesignCoverPic.png",
+    title: "Get App Design.md",
+    subtitle: "DESIGN.md Library for Popular Mobile Apps",
+    tech: "Next.js, PostHog, Vercel",
+    category: "web",
+    highlights: [
+      "Authored scripts and design standards that extract each app's DESIGN.md against set benchmarks, covering 100 apps across 11 categories",
+      "Admin panel with PostHog analytics, shipped through Vercel CI/CD on a Next.js frontend",
+      "Sanity CMS-powered blog and guides for SEO are in development",
+    ],
+    linkAUrl: "https://getappdesign.md/",
+    linkAText: "Visit Site",
+  },
+  {
     src: "/casaCoverPic.png",
     title: "CASA - Swipe to shop",
     subtitle: "Quick Commerce Platform",
@@ -215,6 +229,20 @@ export const PROJECTS: Project[] = [
       "Sanity CMS-powered blog on a reusable, component-driven Next.js/Framer Motion design system",
     ],
     linkAUrl: "https://synradlabs.com/",
+    linkAText: "Visit Site",
+  },
+  {
+    src: "/growingStepsCoverPic.png",
+    title: "The Growing Steps",
+    subtitle: "Childcare & Early Learning Center (Bellevue, WA, USA)",
+    tech: "Next.js, Netlify",
+    category: "web",
+    highlights: [
+      "Creative, playful UI for a US childcare and early learning client in Bellevue, WA",
+      "Multiple interactive kid games, including a bubble-popping game with a flower-growing counter",
+      "Online enrollment inquiry form, programs and FAQ pages, deployed on Netlify",
+    ],
+    linkAUrl: "https://thegrowingsteps.com/",
     linkAText: "Visit Site",
   },
   {
