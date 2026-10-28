@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { SOCIALS } from "@/constants/socials";
+import StarStation from "../sub/StarStationClient";
+import FooterNavLink from "../sub/FooterNavLink";
 
 type Variant = "space" | "clean";
 
@@ -8,10 +10,10 @@ interface SiteFooterProps {
 }
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Home", href: "/", bay: "home" },
+  { label: "Projects", href: "/#projects", bay: "projects" },
+  { label: "Blog", href: "/blog", bay: "blog" },
+  { label: "Contact", href: "/#contact", bay: "contact" },
 ] as const;
 
 const styles = {
@@ -37,7 +39,75 @@ const styles = {
   },
 } as const;
 
+function SpaceFooter() {
+  const s = styles.space;
+
+  return (
+    <footer className={`${s.wrapper} overflow-hidden`}>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-[radial-gradient(ellipse_70%_100%_at_50%_100%,rgba(112,66,248,0.22),transparent_70%)]"
+      />
+      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 pt-10 pb-8">
+        <div className="relative">
+          {/* Orbital dock: spans the full footer width, station on the right */}
+          <StarStation />
+
+          {/* Brand + navigation: bottom-left over the canvas on large screens */}
+          <div className="mt-10 flex flex-col gap-10 sm:flex-row sm:justify-between lg:absolute lg:bottom-14 lg:left-0 lg:z-10 lg:mt-0 lg:justify-start lg:gap-10">
+            <div className="max-w-xs">
+              <p className={s.name}>Daksh Nauni</p>
+              <p className={`${s.bio} mt-2`}>
+                Full-Stack &amp; Mobile Engineer building web platforms and
+                production mobile apps end to end.
+              </p>
+              <div className="flex items-center gap-4 mt-5">
+                {SOCIALS.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target={link.href.startsWith("mailto") ? undefined : "_blank"}
+                    rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+                    aria-label={link.name}
+                    className={s.social}
+                  >
+                    {link.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className={s.heading}>Navigation</p>
+              <nav aria-label="Footer navigation">
+                <ul className="flex flex-col gap-2">
+                  {NAV_LINKS.map((link) => (
+                    <li key={link.href}>
+                      <FooterNavLink href={link.href} bay={link.bay} className={s.navLink}>
+                        {link.label}
+                      </FooterNavLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Copyright */}
+      <div className={`${s.divider} relative`}>
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-2">
+          <p className={s.copy}>© {new Date().getFullYear()} Daksh Nauni. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function SiteFooter({ variant = "clean" }: SiteFooterProps) {
+  if (variant === "space") return <SpaceFooter />;
+
   const s = styles[variant];
 
   return (
