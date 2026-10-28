@@ -51,7 +51,7 @@ const ProjectCard = ({
         width={1280}
         height={720}
         sizes="(min-width: 768px) 33vw, 100vw"
-        className="w-full h-56 object-cover object-top"
+        className="w-full h-auto aspect-video object-cover"
       />
 
       <div className="relative p-4 flex flex-col flex-1">
