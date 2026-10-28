@@ -11,15 +11,53 @@ interface ExperienceEntry {
   org: string;
   period: string;
   current?: boolean;
+  detail: string;
 }
 
 const EXPERIENCE: ExperienceEntry[] = [
-  { role: "Founding Engineer", org: "StartupKaro", period: "Feb 2026 - Present", current: true },
-  { role: "Founder", org: "Synrad Labs", period: "Ongoing" },
-  { role: "Software Engineer", org: "CASA", period: "Aug 2025 - Jan 2026" },
-  { role: "Associate Software Engineer", org: "Mind IT Systems", period: "Mar 2024 - Aug 2025" },
-  { role: "Developer", org: "Hardik Singh & Company", period: "Sep 2023 - Nov 2023" },
-  { role: "Automation Engineer", org: "ImpactQA", period: "Oct 2022 - Jun 2023" },
+  {
+    role: "Founding Engineer",
+    org: "StartupKaro",
+    period: "Feb 2026 - Present",
+    current: true,
+    detail:
+      "Own the customer, employee, and admin panels of a platform serving 5,000+ clients, shipping Next.js, Node.js, PostgreSQL, Razorpay, and PostHog workflows.",
+  },
+  {
+    role: "Founder",
+    org: "Synrad Labs",
+    period: "Ongoing",
+    detail:
+      "Run my own software studio, independently delivering 19+ client projects across food and beverage, fintech, HR, and logistics.",
+  },
+  {
+    role: "Software Engineer",
+    org: "CASA",
+    period: "Aug 2025 - Jan 2026",
+    detail:
+      "Built the Flutter quick-commerce app from scratch with GraphQL, Firebase, and Razorpay, working directly with founders on an app later featured on Shark Tank India.",
+  },
+  {
+    role: "Associate Software Engineer",
+    org: "Mind IT Systems",
+    period: "Mar 2024 - Aug 2025",
+    detail:
+      "Delivered 10+ production mobile apps with payments, maps, OAuth, and push notifications, cutting delivery time by 4 weeks and lifting completion rate by 20%.",
+  },
+  {
+    role: "Developer",
+    org: "Hardik Singh & Company",
+    period: "Sep 2023 - Nov 2023",
+    detail:
+      "Designed, built, and deployed MERN-stack web applications for clients, taking each from requirements through to production release.",
+  },
+  {
+    role: "Automation Engineer",
+    org: "ImpactQA",
+    period: "Oct 2022 - Jun 2023",
+    detail:
+      "Selenium automation for Sakon and Starbucks India's internal invoicing systems, plus load testing for PVR India's ticket booking app.",
+  },
 ];
 
 const STATS = [
@@ -224,6 +262,9 @@ const About = () => {
                     )}
                   </div>
                   <p className="text-xs mt-0.5 text-gray-500">{entry.period}</p>
+                  {entry.detail && (
+                    <p className="text-xs mt-1.5 text-gray-400 leading-relaxed">{entry.detail}</p>
+                  )}
                 </motion.div>
               );
             })}
