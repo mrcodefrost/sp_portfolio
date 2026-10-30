@@ -47,6 +47,18 @@ export async function getPostsPaginated(
   return { posts, total };
 }
 
+/** Returns the `count` most recent published posts (for homepage previews). */
+export async function getLatestPosts(count: number): Promise<PostSummary[]> {
+  if (!isSanityConfigured()) return [];
+  return getClient().fetch<PostSummary[]>(
+    `*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$count] {
+      ${POST_SUMMARY_FIELDS}
+    }`,
+    { count },
+    { next: { revalidate: 60 } }
+  );
+}
+
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   if (!isSanityConfigured()) return null;
   return getClient().fetch(

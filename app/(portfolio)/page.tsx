@@ -6,8 +6,11 @@ import Testimonials from "../components/main/Testimonials";
 import BlogTeaser from "../components/main/BlogTeaser";
 import Contact from "../components/main/Contact";
 import ContactFab from "../components/sub/ContactFab";
+import { getLatestPosts } from "@/features/blog/services/queries";
 
-export default function Home() {
+export default async function Home() {
+  const latestPosts = await getLatestPosts(3).catch(() => []);
+
   return (
     <main className="h-full w-full">
       <div className="flex flex-col">
@@ -16,7 +19,7 @@ export default function Home() {
         <Projects />
         <Testimonials />
         <Skills />
-        <BlogTeaser />
+        <BlogTeaser posts={latestPosts} />
         <Contact />
         <ContactFab />
       </div>

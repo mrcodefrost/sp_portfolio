@@ -5,8 +5,10 @@ import { useInView } from "react-intersection-observer";
 import { slideInFromLeft, slideInFromRight } from "@/utils/motion";
 import Link from "next/link";
 import VerticalCutReveal from "../sub/VerticalCutReveal";
+import BlogPreviewCard from "../sub/BlogPreviewCard";
+import type { PostSummary } from "@/features/blog/types";
 
-const BlogTeaser = () => {
+const BlogTeaser = ({ posts = [] }: { posts?: PostSummary[] }) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
 
   return (
@@ -44,6 +46,22 @@ const BlogTeaser = () => {
           Written from experience, not from a prompt.
         </p>
       </motion.div>
+
+      {posts.length > 0 && (
+        <div className="mt-12 grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post, i) => (
+            <motion.div
+              key={post._id}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              variants={slideInFromRight(0.2 + i * 0.12)}
+              className="flex"
+            >
+              <BlogPreviewCard post={post} />
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       <motion.div
         initial="hidden"
