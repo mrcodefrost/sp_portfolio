@@ -6,6 +6,8 @@ import { useInView } from "react-intersection-observer";
 import { slideInFromLeft, slideInFromRight } from "@/utils/motion";
 import toast from "react-hot-toast";
 import VerticalCutReveal from "../sub/VerticalCutReveal";
+import CommsBeacon from "../sub/CommsBeacon";
+import { IsoStyle } from "../sub/IsoControls";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mpzvajzo";
 
@@ -64,48 +66,67 @@ const validate = (data: FormData): FormErrors => {
   return errors;
 };
 
+const fieldClass = (error?: string) =>
+  `w-full bg-white/[0.03] border ${
+    error ? "border-red-500/70" : "border-white/10"
+  } rounded-lg px-3.5 py-2.5 text-sm text-cyan-50 placeholder-cyan-100/25
+  focus:outline-none focus:border-cyan-300/70 focus:shadow-[0_0_14px_-2px_rgba(34,211,238,0.45)]
+  transition-all duration-200`;
+
+const FieldLabel = ({
+  id,
+  children,
+  optional,
+}: {
+  id: string;
+  children: React.ReactNode;
+  optional?: boolean;
+}) => (
+  <label
+    htmlFor={id}
+    className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/70"
+  >
+    {children}
+    {optional && (
+      <span className="ml-1.5 normal-case tracking-normal text-cyan-100/30">
+        (optional)
+      </span>
+    )}
+  </label>
+);
+
 const InputField = ({
   label,
   id,
   type = "text",
   value,
   onChange,
+  onBlur,
   error,
   placeholder,
-  optional,
 }: {
   label: string;
   id: string;
   type?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   error?: string;
   placeholder?: string;
-  optional?: boolean;
 }) => (
   <div className="flex flex-col gap-1.5">
-    <label htmlFor={id} className="text-sm font-medium text-gray-300">
-      {label}
-      {optional && (
-        <span className="ml-1.5 text-xs text-gray-500 font-normal">
-          (optional)
-        </span>
-      )}
-    </label>
+    <FieldLabel id={id}>{label}</FieldLabel>
     <input
       id={id}
       name={id}
       type={type}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       placeholder={placeholder}
-      className={`bg-[#0d0225]/70 border ${
-        error ? "border-red-500/70" : "border-[#7042f861]"
-      } rounded-lg px-4 py-3 text-gray-200 placeholder-gray-600 text-sm
-      focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
-      transition-all duration-200 backdrop-blur-sm`}
+      className={fieldClass(error)}
     />
-    {error && <p className="text-xs text-red-400 mt-0.5">{error}</p>}
+    {error && <p className="font-mono text-[11px] text-red-400">! {error}</p>}
   </div>
 );
 
@@ -120,6 +141,7 @@ const Contact = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
@@ -133,8 +155,42 @@ const Contact = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // surface a field's error once the user leaves it (an untouched empty optional phone stays quiet)
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const name = e.target.name as keyof FormErrors;
+    const found = validate(formData)[name];
+    if (found) setErrors((prev) => ({ ...prev, [name]: found }));
+  };
+
+  // live validity lights the pads on the transmitter and arms the transmit button
+  const live = validate(formData);
+  const filled = [
+    !!formData.name.trim() && !live.name,
+    !!formData.email.trim() && !live.email,
+    !!formData.subject.trim() && !live.subject,
+    !!formData.message.trim() && !live.message,
+  ];
+  const armed = filled.every(Boolean) && !live.phone;
+
+  // payload progress: a valid field counts fully, a started one counts partially
+  const partial = (len: number, need: number) => Math.min(len / need, 0.9);
+  const progress = armed
+    ? 1
+    : ([
+        [formData.name, 2],
+        [formData.email, 6],
+        [formData.subject, 3],
+        [formData.message, 20],
+      ] as const).reduce(
+        (sum, [v, need], i) => sum + (filled[i] ? 1 : partial(v.trim().length, need)),
+        0
+      ) / 4;
+  const CELLS = 24;
+  const lit = Math.round(progress * CELLS);
+
+  const submit = async () => {
     const validationErrors = validate(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -155,6 +211,7 @@ const Contact = () => {
       : "";
 
     setIsSubmitting(true);
+    setSent(false);
     try {
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
@@ -180,6 +237,7 @@ const Contact = () => {
         });
         setFormData({ name: "", email: "", countryCode: "+1", phone: "", subject: "", message: "" });
         setErrors({});
+        setSent(true);
       } else {
         throw new Error("Submission failed");
       }
@@ -197,6 +255,19 @@ const Contact = () => {
       setIsSubmitting(false);
     }
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (armed && !isSubmitting) void submit();
+  };
+
+  const status = isSubmitting
+    ? "Transmitting"
+    : sent
+      ? "Delivered"
+      : armed
+        ? "Armed"
+        : "Standby";
 
   return (
     <div
@@ -217,7 +288,7 @@ const Contact = () => {
         </VerticalCutReveal>
       </h1>
 
-      <div className="w-full max-w-3xl px-6 md:px-10">
+      <div className="w-full max-w-4xl px-6 md:px-10">
         {/* Header card */}
         <motion.div
           variants={slideInFromLeft(0.15)}
@@ -241,157 +312,184 @@ const Contact = () => {
           </p>
         </motion.div>
 
+        <IsoStyle />
         <motion.form
           variants={slideInFromRight(0.3)}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           onSubmit={handleSubmit}
           noValidate
-          className="relative rounded-2xl border border-[#7042f861] bg-[#03001430] backdrop-blur-md p-8 shadow-lg shadow-[#2A0E61]/30"
+          className="relative rounded-2xl bg-gradient-to-b from-cyan-400/50 via-purple-500/25 to-cyan-400/10 p-px shadow-[0_0_60px_-12px_rgba(34,211,238,0.35)]"
         >
-          {/* Glow effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-900/10 via-transparent to-cyan-900/5 pointer-events-none" />
+          <div className="relative overflow-hidden rounded-[15px] bg-[#050118]/90 backdrop-blur-xl">
+          {/* soft ambient light */}
+          <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-2/3 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 right-0 h-48 w-1/2 rounded-full bg-purple-600/15 blur-3xl" />
 
-          <span className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-[#7042f861] bg-[#0d0225]/80 px-3 py-1 text-xs text-gray-300 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-            Available
-          </span>
+          {/* corner brackets */}
+          {[
+            "left-3 top-3 border-l border-t rounded-tl-md",
+            "right-3 top-3 border-r border-t rounded-tr-md",
+            "left-3 bottom-3 border-l border-b rounded-bl-md",
+            "right-3 bottom-3 border-r border-b rounded-br-md",
+          ].map((c) => (
+            <span key={c} aria-hidden="true" className={`pointer-events-none absolute z-10 h-3 w-3 border-cyan-300/60 ${c}`} />
+          ))}
 
-          <div className="relative flex flex-col gap-5">
-            {/* Row 1: Name + Email */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <InputField
-                label="Full Name"
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                error={errors.name}
-                placeholder="John Doe"
+          {/* console header strip */}
+          <div className="relative flex items-center justify-between gap-3 border-b border-white/5 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.25em] text-cyan-200/80">
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-3 w-px bg-cyan-300/60" />
+              Secure uplink
+            </span>
+            <span className="inline-flex items-center gap-2" role="status">
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  isSubmitting
+                    ? "animate-pulse bg-amber-300"
+                    : armed
+                      ? "bg-cyan-300 shadow-[0_0_8px_#22d3ee]"
+                      : "bg-green-400"
+                }`}
               />
-              <InputField
-                label="Email Address"
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={errors.email}
-                placeholder="john@example.com"
-              />
-            </div>
+              {status}
+            </span>
+          </div>
 
-            {/* Row 2: Phone (with country code) + Subject */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Phone with country code prefix */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-gray-300">
-                  Phone Number
-                  <span className="ml-1.5 text-xs text-gray-500 font-normal">(optional)</span>
-                </label>
-                <div className="flex gap-2 min-w-0">
-                  <input
-                    id="countryCode"
-                    name="countryCode"
-                    type="text"
-                    value={formData.countryCode}
-                    onChange={handleChange}
-                    placeholder="+1"
-                    className="w-16 shrink-0 bg-[#0d0225]/70 border border-[#7042f861] rounded-lg px-2 py-3
-                    text-gray-200 placeholder-gray-600 text-sm
-                    focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
-                    transition-all duration-200 backdrop-blur-sm"
-                  />
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="234 567 8900"
-                    className={`min-w-0 flex-1 bg-[#0d0225]/70 border ${
-                      errors.phone ? "border-red-500/70" : "border-[#7042f861]"
-                    } rounded-lg px-4 py-3 text-gray-200 placeholder-gray-600 text-sm
-                    focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
-                    transition-all duration-200 backdrop-blur-sm`}
-                  />
-                </div>
-                {errors.phone && (
-                  <p className="text-xs text-red-400 mt-0.5">{errors.phone}</p>
-                )}
+          <div className="relative grid gap-8 p-5 md:grid-cols-[1fr_17rem] md:p-7">
+            {/* terminal fields */}
+            <div className="flex min-w-0 flex-col gap-5">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <InputField
+                  label="Callsign"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.name}
+                  placeholder="John Doe"
+                />
+                <InputField
+                  label="Frequency (email)"
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.email}
+                  placeholder="john@example.com"
+                />
               </div>
 
-              <InputField
-                label="Subject"
-                id="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                error={errors.subject}
-                placeholder="Freelance project, Job opportunity..."
-              />
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div className="flex flex-col gap-1.5">
+                  <FieldLabel id="phone" optional>
+                    Comm-link
+                  </FieldLabel>
+                  <div className="flex min-w-0 gap-2">
+                    <input
+                      id="countryCode"
+                      name="countryCode"
+                      type="text"
+                      aria-label="Country code"
+                      value={formData.countryCode}
+                      onChange={handleChange}
+                      placeholder="+1"
+                      className={`${fieldClass()} !w-16 shrink-0 !px-2`}
+                    />
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="234 567 8900"
+                      className={`${fieldClass(errors.phone)} min-w-0 flex-1`}
+                    />
+                  </div>
+                  {errors.phone && (
+                    <p className="font-mono text-[11px] text-red-400">! {errors.phone}</p>
+                  )}
+                </div>
+
+                <InputField
+                  label="Subject"
+                  id="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.subject}
+                  placeholder="Freelance project, Job opportunity..."
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <FieldLabel id="message">Transmission</FieldLabel>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={5}
+                  value={formData.message}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Tell me about your project or inquiry..."
+                  className={`${fieldClass(errors.message)} resize-none`}
+                />
+                {errors.message && (
+                  <p className="font-mono text-[11px] text-red-400">! {errors.message}</p>
+                )}
+              </div>
             </div>
 
-            {/* Message */}
-            <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="message"
-                className="text-sm font-medium text-gray-300"
+            {/* isometric transmitter + launch control */}
+            <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <CommsBeacon filled={filled} sending={isSubmitting} />
+            </div>
+          </div>
+
+          {/* launch bar: always visible, glows when armed */}
+          <div className="relative flex flex-col gap-3 border-t border-white/5 bg-white/[0.02] px-6 py-3 sm:flex-row sm:items-center sm:justify-between md:px-7">
+            <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:max-w-xs">
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-cyan-200/60">
+                <span>
+                  {sent ? "Message received" : armed ? "All systems green" : "Awaiting payload"}
+                </span>
+                <span className="tabular-nums">{Math.round(progress * 100)}%</span>
+              </div>
+              <div
+                role="progressbar"
+                aria-label="Payload ready"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress * 100)}
+                className="flex h-2 gap-[3px]"
               >
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Tell me about your project or inquiry..."
-                className={`bg-[#0d0225]/70 border ${
-                  errors.message ? "border-red-500/70" : "border-[#7042f861]"
-                } rounded-lg px-4 py-3 text-gray-200 placeholder-gray-600 text-sm
-                focus:outline-none focus:border-purple-500/80 focus:ring-1 focus:ring-purple-500/40
-                transition-all duration-200 backdrop-blur-sm resize-none`}
-              />
-              {errors.message && (
-                <p className="text-xs text-red-400 mt-0.5">{errors.message}</p>
-              )}
+                {Array.from({ length: CELLS }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`h-full flex-1 rounded-[1px] transition-all duration-300 ${
+                      i < lit
+                        ? "bg-cyan-300 shadow-[0_0_6px_rgba(34,211,238,0.7)]"
+                        : "bg-white/10"
+                    } ${!armed && i === lit ? "animate-pulse bg-cyan-300/50" : ""}`}
+                  />
+                ))}
+              </div>
             </div>
-
-            {/* Submit */}
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="button-primary mt-2 w-full md:w-auto md:self-end px-8 py-3 rounded-lg
-              text-white font-semibold text-sm tracking-wide
-              border border-[#7042f861]
-              disabled:opacity-50 disabled:cursor-not-allowed
-              transition-all duration-300 cursor-pointer"
+              disabled={!armed || isSubmitting}
+              aria-label="Transmit message"
+              className={`group inline-flex w-full items-center justify-center gap-2 rounded-lg border px-7 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 sm:w-auto cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-px ${
+                armed
+                  ? "border-cyan-200 bg-cyan-400 text-[#03001a] shadow-[0_0_16px_rgba(34,211,238,0.5)] hover:bg-cyan-300"
+                  : "border-cyan-400/30 bg-cyan-400/10 text-cyan-200"
+              }`}
             >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2 justify-center">
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Sending...
-                </span>
-              ) : (
-                "Send Message"
-              )}
+              {isSubmitting ? "Transmitting..." : "Transmit"}
             </button>
+          </div>
           </div>
         </motion.form>
       </div>
