@@ -10,6 +10,9 @@ const Hero = () => {
         autoPlay
         muted
         loop
+        playsInline
+        aria-hidden="true"
+        disablePictureInPicture
         preload="none"
         className='rotate-180 absolute top-[-340px] left-0 z-[1] w-full h-full object-cover'
 
