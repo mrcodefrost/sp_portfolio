@@ -16,9 +16,14 @@ const NAV_LINKS = [
   { label: "Contact", href: "/#contact", bay: "contact" },
 ] as const;
 
+const BIO =
+  "Full-Stack & Mobile Engineer building web platforms and production mobile apps end to end.";
+
+// No backdrop blur on the space footer: it covers the full width, forces its own compositing layer on
+// every scroll frame, and at 3% opacity the blur is not visible anyway.
 const styles = {
   space: {
-    wrapper: "relative z-[30] bg-[#03001408] backdrop-blur-xs border-t border-[#7042f861]",
+    wrapper: "relative z-[30] bg-[#03001408]",
     name: "text-white font-semibold text-base",
     bio: "text-gray-400 text-sm leading-relaxed",
     heading: "text-gray-300 text-xs font-semibold uppercase tracking-widest mb-3",
@@ -39,6 +44,63 @@ const styles = {
   },
 } as const;
 
+type Styles = (typeof styles)[Variant];
+
+function Brand({ s }: { s: Styles }) {
+  return (
+    <div className="max-w-xs">
+      <p className={s.name}>Daksh Nauni</p>
+      <p className={`${s.bio} mt-2`}>{BIO}</p>
+      <div className="flex items-center gap-4 mt-5">
+        {SOCIALS.map((link) => {
+          const mail = link.href.startsWith("mailto");
+          return (
+            <a
+              key={link.name}
+              href={link.href}
+              target={mail ? undefined : "_blank"}
+              rel={mail ? undefined : "noopener noreferrer"}
+              aria-label={link.name}
+              className={s.social}
+            >
+              {link.icon}
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function FooterNav({ s, space }: { s: Styles; space?: boolean }) {
+  return (
+    <div>
+      <p className={s.heading}>Navigation</p>
+      <nav aria-label="Footer navigation">
+        <ul className="flex flex-col gap-2">
+          {NAV_LINKS.map((link) => (
+            <li key={link.href}>
+              {space ? (
+                <FooterNavLink href={link.href} bay={link.bay} className={s.navLink}>
+                  {link.label}
+                </FooterNavLink>
+              ) : (
+                <Link href={link.href} className={s.navLink}>
+                  {link.label}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  );
+}
+
+function Copyright({ s }: { s: Styles }) {
+  return <p className={s.copy}>© {new Date().getFullYear()} Daksh Nauni. All rights reserved.</p>;
+}
+
 function SpaceFooter() {
   const s = styles.space;
 
@@ -55,50 +117,15 @@ function SpaceFooter() {
 
           {/* Brand + navigation: bottom-left over the canvas on large screens */}
           <div className="mt-10 flex flex-col gap-10 sm:flex-row sm:justify-between lg:absolute lg:bottom-14 lg:left-0 lg:z-10 lg:mt-0 lg:justify-start lg:gap-10">
-            <div className="max-w-xs">
-              <p className={s.name}>Daksh Nauni</p>
-              <p className={`${s.bio} mt-2`}>
-                Full-Stack &amp; Mobile Engineer building web platforms and
-                production mobile apps end to end.
-              </p>
-              <div className="flex items-center gap-4 mt-5">
-                {SOCIALS.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    target={link.href.startsWith("mailto") ? undefined : "_blank"}
-                    rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
-                    aria-label={link.name}
-                    className={s.social}
-                  >
-                    {link.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className={s.heading}>Navigation</p>
-              <nav aria-label="Footer navigation">
-                <ul className="flex flex-col gap-2">
-                  {NAV_LINKS.map((link) => (
-                    <li key={link.href}>
-                      <FooterNavLink href={link.href} bay={link.bay} className={s.navLink}>
-                        {link.label}
-                      </FooterNavLink>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
+            <Brand s={s} />
+            <FooterNav s={s} space />
           </div>
         </div>
       </div>
 
-      {/* Copyright */}
       <div className={`${s.divider} relative`}>
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-2">
-          <p className={s.copy}>© {new Date().getFullYear()} Daksh Nauni. All rights reserved.</p>
+          <Copyright s={s} />
         </div>
       </div>
     </footer>
@@ -114,51 +141,14 @@ export default function SiteFooter({ variant = "clean" }: SiteFooterProps) {
     <footer className={s.wrapper}>
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
-          {/* Brand + socials */}
-          <div className="max-w-xs">
-            <p className={s.name}>Daksh Nauni</p>
-            <p className={`${s.bio} mt-2`}>
-              Full-Stack &amp; Mobile Engineer building web platforms and
-              production mobile apps end to end.
-            </p>
-            <div className="flex items-center gap-4 mt-5">
-              {SOCIALS.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  target={link.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
-                  aria-label={link.name}
-                  className={s.social}
-                >
-                  {link.icon}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <p className={s.heading}>Navigation</p>
-            <nav aria-label="Footer navigation">
-              <ul className="flex flex-col gap-2">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className={s.navLink}>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
+          <Brand s={s} />
+          <FooterNav s={s} />
         </div>
       </div>
 
-      {/* Copyright */}
       <div className={s.divider}>
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4">
-          <p className={s.copy}>© {new Date().getFullYear()} Daksh Nauni. All rights reserved.</p>
+          <Copyright s={s} />
         </div>
       </div>
     </footer>

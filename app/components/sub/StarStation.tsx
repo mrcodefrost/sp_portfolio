@@ -16,6 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import { useInView } from "react-intersection-observer";
+import { FireButton, IsoStyle, ReactorSwitch } from "./IsoControls";
 import { useHoveredBay } from "./bayHover";
 import * as THREE from "three";
 
@@ -81,6 +82,21 @@ const ZONE_DELAY: Record<string, number> = {
   "pad-blog": 2.48,
   fleet: 2.85,
 };
+// Section numbers announced while power returns or fails. They are not in power order, so the readout jumps around.
+const SECTOR_NUMBER: Record<string, number> = {
+  core: 1,
+  hub: 2,
+  halo: 9,
+  "arm-home": 4,
+  "pad-home": 5,
+  "arm-projects": 8,
+  "pad-projects": 3,
+  "arm-contact": 11,
+  "pad-contact": 6,
+  "arm-blog": 10,
+  "pad-blog": 7,
+  fleet: 12,
+};
 const MAX_DELAY = 2.85;
 const ZONE_DUR = 1.1;
 const POWER_SECONDS = MAX_DELAY + ZONE_DUR;
@@ -95,6 +111,8 @@ class PowerRig {
   target = true;
   t0 = -1000;
   reduced = false;
+  section: number | null = null;
+  onSection?: (section: number | null) => void;
 
   zone(id: string): ZoneState {
     let z = this.zones.get(id);
@@ -119,13 +137,22 @@ class PowerRig {
     this.target = on;
     this.t0 = performance.now() / 1000;
     this.zones.forEach((z) => (z.from = z.level));
+    this.section = null;
+    this.onSection?.(null);
   }
 
   // Power returns in the order of ZONE_DELAY and fails in the reverse order, each zone flickering in between.
   update(now: number) {
+    let latest = -1;
+    let latestNumber: number | null = null;
     this.zones.forEach((z) => {
       const d = this.target ? z.delay : MAX_DELAY - z.delay;
       const u = (now - this.t0 - d) / ZONE_DUR;
+      // the section announced is the one whose power change started most recently
+      if (this.t0 >= 0 && u > 0 && SECTOR_NUMBER[z.id] && d >= latest) {
+        latest = d;
+        latestNumber = SECTOR_NUMBER[z.id];
+      }
       let level: number;
       if (u <= 0) level = z.from;
       else if (u >= 1) level = this.target ? 1 : 0;
@@ -143,6 +170,10 @@ class PowerRig {
       z.win.color.copy(C_GLASS).lerp(C_ACCENT, level);
       z.pulse.color.copy(C_DETAIL).lerp(C_HI, level);
     });
+    if (latestNumber !== this.section && this.t0 >= 0 && (latestNumber !== null || this.section !== null)) {
+      this.section = latestNumber;
+      this.onSection?.(latestNumber);
+    }
   }
 }
 
@@ -989,6 +1020,12 @@ function Patrol() {
   );
 }
 
+// Extra canvas height (px) added above the original box so the top of the ship is not clipped.
+// The scene keeps its size and sits where it did; the added room is all at the top.
+const TOP_EXTRA = 28;
+// Enlarges the ship and station; the camera keeps the top of the scene inside the canvas.
+const SCENE_SCALE = 1.1;
+
 // True isometric orthographic view; the station sits right of centre so the fleet has room on the left.
 function Rig() {
   const { camera, size } = useThree();
@@ -1000,11 +1037,16 @@ function Rig() {
     // Wide: fleet on the left, station right of centre. Narrow: station only, filling the width.
     const narrow = size.width < 900;
     const [vw, vh, shift] = narrow ? [640, 480, 0] : [900, 450, -130];
-    const target = right.clone().multiplyScalar(shift).add(up.clone().multiplyScalar(40));
+    // zoom fits the original box height, then SCENE_SCALE enlarges it. The scene is shifted down so the top
+    // of its frame lines up with the top of the (taller) canvas: the extra height is spent on the top edge.
+    const base = Math.min(size.width / vw, (size.height - TOP_EXTRA) / vh);
+    const zoom = base * SCENE_SCALE;
+    const lift = (vh * zoom - size.height) / 2 / zoom;
+    const target = right.clone().multiplyScalar(shift).add(up.clone().multiplyScalar((narrow ? 40 : 0) + lift));
     cam.position.copy(target).addScaledVector(dir, 1500);
     cam.up.set(0, 1, 0);
     cam.lookAt(target);
-    cam.zoom = Math.min(size.width / vw, size.height / vh);
+    cam.zoom = zoom;
     cam.updateProjectionMatrix();
   }, [camera, size]);
   return null;
@@ -1040,6 +1082,12 @@ export default function StarStation() {
   const fx = useRef<Fx>({ shot: -10 });
   const rig = useMemo(() => new PowerRig(), []);
   useEffect(() => {
+    rig.onSection = setSection;
+    return () => {
+      rig.onSection = undefined;
+    };
+  }, [rig]);
+  useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => (rig.reduced = mq.matches);
     sync();
@@ -1047,7 +1095,8 @@ export default function StarStation() {
     return () => mq.removeEventListener("change", sync);
   }, [rig]);
   const [phase, setPhase] = useState<"idle" | "starting" | "stopping">("idle");
-  const firstRun = useRef(true);
+  const [section, setSection] = useState<number | null>(null);
+  const prevOn = useRef(true);
   const { ref, inView } = useInView({ rootMargin: "200px" });
   const navBay = useHoveredBay();
   const activeBay = bay ?? BAYS.find((b) => b.id === navBay) ?? null;
@@ -1077,10 +1126,9 @@ export default function StarStation() {
   // Start or cut power: zones flicker on (or off) one after another until the transition completes.
   useEffect(() => {
     rig.set(on);
-    if (firstRun.current) {
-      firstRun.current = false;
-      return;
-    }
+    // only announce a transition when the reactor state really changed (not on mount or a dev double-run)
+    if (prevOn.current === on) return;
+    prevOn.current = on;
     setPhase(on ? "starting" : "stopping");
     const timer = setTimeout(() => setPhase("idle"), POWER_SECONDS * 1000);
     return () => clearTimeout(timer);
@@ -1113,9 +1161,9 @@ export default function StarStation() {
 
   const readout =
     phase === "starting"
-      ? "reactor online · power returning section by section"
+      ? `power returning in section ${section ?? "…"}`
       : phase === "stopping"
-        ? "reactor shutting down · power failing section by section"
+        ? `power shutting down in section ${section ?? "…"}`
         : !on
           ? "reactor offline · space to power up"
           : activeBay
@@ -1125,18 +1173,20 @@ export default function StarStation() {
         : "station online · slow orbit · fleet on patrol";
 
   return (
-    <div className="flex w-full flex-col items-center">
+    <div className="relative flex w-full flex-col items-center">
       <div
         ref={ref}
         tabIndex={0}
         role="group"
         aria-label="Interactive rotating starship station with a battleship. Press space to toggle power and F to fire the ion lance. Each docking bay links to a section of the site."
         onKeyDown={onKeyDown}
-        className="relative aspect-[4/3] w-full rounded-lg focus-visible:outline focus-visible:outline-1 focus-visible:outline-cyan-300/60 lg:aspect-[2/1]"
+        className="relative aspect-[4/3] w-full rounded-lg focus-visible:outline focus-visible:outline-1 focus-visible:outline-cyan-300/60 lg:aspect-[7/3]"
       >
+        {/* the canvas box reaches TOP_EXTRA px above the footprint, into the footer's top padding */}
+        <div className="absolute inset-x-0 bottom-0" style={{ top: -TOP_EXTRA }}>
         <Canvas
           orthographic
-          dpr={[1, 2]}
+          dpr={[1, 1.5]}
           frameloop={inView ? "always" : "never"}
           camera={{ near: 1, far: 5000, position: [1000, 1000, 1000], zoom: 1 }}
           gl={{ alpha: true, antialias: true, toneMapping: THREE.NoToneMapping }}
@@ -1155,29 +1205,21 @@ export default function StarStation() {
             <Fleet />
           </Ctx.Provider>
         </Canvas>
+        </div>
       </div>
 
-      <div className="mt-3 flex w-full flex-wrap items-center justify-between gap-3">
-        <p className="font-mono text-[11px] lowercase tracking-wide text-gray-500" aria-live="polite">
-          {readout}
-        </p>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setOn((v) => !v)}
-            aria-pressed={on}
-            className="inline-flex items-center gap-2 rounded-full border border-[#7042f861] px-3 py-1 text-xs text-gray-300 transition-colors hover:border-cyan-300/60 hover:text-white"
-          >
-            <span className={`h-1.5 w-1.5 rounded-full ${on ? "bg-cyan-300 shadow-[0_0_8px_2px_rgba(103,232,249,0.7)]" : "bg-gray-600"}`} />
-            Reactor
-          </button>
-          <button
-            type="button"
-            onClick={fire}
-            className="rounded-full border border-[#7042f861] px-3 py-1 text-xs text-gray-300 transition-colors hover:border-cyan-300/60 hover:text-white"
-          >
-            Fire lance
-          </button>
+      {/* controls on the right; the status line sits under them. The block has a fixed width, so the
+          buttons stay put no matter how long the status text is */}
+      <div className="mt-3 flex w-full justify-end lg:pointer-events-none lg:absolute lg:bottom-0 lg:right-0 lg:z-10 lg:mt-0 lg:w-auto">
+        <IsoStyle />
+        <div className="w-[22rem] max-w-full lg:pointer-events-auto">
+          <div className="flex items-end justify-center gap-4">
+            <ReactorSwitch on={on} onToggle={() => setOn((v) => !v)} />
+            <FireButton ready={on && phase !== "stopping"} onFire={fire} />
+          </div>
+          <p className="mt-2 min-h-[1rem] whitespace-nowrap text-center font-mono text-[11px] lowercase tracking-wide text-gray-500" aria-live="polite">
+            {readout}
+          </p>
         </div>
       </div>
     </div>
